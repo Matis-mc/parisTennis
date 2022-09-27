@@ -10,15 +10,26 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.sherbrooke.paristennis.api.Client;
+import com.sherbrooke.paristennis.api.MatchRepository;
 import com.sherbrooke.paristennis.model.Partie;
 import com.sherbrooke.paristennis.service.MatchService;
 
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.sse.EventSource;
+import okhttp3.sse.EventSourceListener;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,29 +44,61 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getParties();
+                MatchRepository.getInstance().getParties();
             }
         });
     }
+
+
 
     /**
      * move this in a component available anywhere in the application
      */
-    public void getParties(){
-        Call<List<Partie>> call = Client.getInstance().getApi().getActuelleParties();
-        call.enqueue(new Callback<List<Partie>>() {
-            @Override
-            public void onResponse(Call<List<Partie>> call, Response<List<Partie>> response) {
-                Log.e("Callback", response.body().toString());
-            }
+    EventSourceListener eventSourceListener = new EventSourceListener() {
+        @Override
+        public void onClosed(@NotNull EventSource eventSource) {
+            super.onClosed(eventSource);
+        }
 
-            @Override
-            public void onFailure(Call<List<Partie>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "An error has occured", Toast.LENGTH_LONG).show();
-            }
-        });
+        @Override
+        public void onEvent(@NotNull EventSource eventSource, @Nullable String id, @Nullable String type, @NotNull String data) {
+            Log.e("data-sse", data);
+            super.onEvent(eventSource, id, type, data);
+        }
+
+        @Override
+        public void onFailure(@NotNull EventSource eventSource, @Nullable Throwable t, @Nullable okhttp3.Response response) {
+            super.onFailure(eventSource, t, response);
+        }
+
+        @Override
+        public void onOpen(@NotNull EventSource eventSource, @NotNull okhttp3.Response response) {
+            super.onOpen(eventSource, response);
+        }
+    };
+
+    OkHttpClient client = new OkHttpClient.Builder()
+            .connectTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.MINUTES)
+            .writeTimeout(10, TimeUnit.MINUTES)
+            .build();
+
+    Request request = new Request.Builder()
+            .url("http://192.168.224.1:3000/events")
+            .header("Accept", "application/json; q=0.5")
+            .addHeader("Accept", "text/event-stream")
+            .build();
+
+    Call call = (Call) client.newCall(request);
+    Response response;
+
+    {
+        try {
+            response = call.execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
