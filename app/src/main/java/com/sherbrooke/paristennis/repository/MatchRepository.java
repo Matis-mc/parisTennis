@@ -1,12 +1,10 @@
-package com.sherbrooke.paristennis.api;
+package com.sherbrooke.paristennis.repository;
 
-import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
+import com.sherbrooke.paristennis.api.Client;
 import com.sherbrooke.paristennis.model.Partie;
 
-import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;

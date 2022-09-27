@@ -1,13 +1,6 @@
 package com.sherbrooke.paristennis.service;
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
-import android.util.Log;
-
-import androidx.annotation.Nullable;
-
-import com.sherbrooke.paristennis.api.MatchRepository;
+import com.sherbrooke.paristennis.repository.MatchRepository;
 import com.sherbrooke.paristennis.model.Partie;
 
 import java.util.HashMap;
