@@ -1,34 +1,41 @@
 package com.sherbrooke.paristennis.service;
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
-import android.util.Log;
+import com.sherbrooke.paristennis.repository.MatchRepository;
+import com.sherbrooke.paristennis.model.Partie;
 
-import androidx.annotation.Nullable;
+import java.util.HashMap;
 
-public class MatchService extends Service {
+public class MatchService {
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+    private static MatchService instance;
+
+    private HashMap<Partie, Long> allParties;
+    private HashMap<Partie, Long> finishededParties;
+    private HashMap<Partie, Long> currentParties;
+    private HashMap<Partie, Long> futureParties;
+
+
+    public void getAllParties(){
+        MatchRepository.getInstance().getParties();
     }
 
-    //If a component calls bindService() to create the service and onStartCommand() is not called, the service runs only as long as the component is bound to it. After the service is unbound from all of its clients, the system destroys it.
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId){
-        Log.e("Service", "service is started");
-        return START_NOT_STICKY;
-    }
-
-    @Override
-    public void onCreate(){
+    public void refreshCurrentParties(){
 
     }
 
-    @Override
-    public void onDestroy(){
-
+    public void refreshPartie(Long id){
+        
     }
+
+    private MatchService(){
+    }
+
+    public MatchService getInstance(){
+        if(instance == null){
+            instance = new MatchService();
+        }
+        return instance;
+    }
+
+
 }

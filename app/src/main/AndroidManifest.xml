@@ -9,9 +9,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ParisTennis">
-        <activity
-            android:name=".MainActivity2"
-            android:exported="false" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,7 +20,7 @@
         <service
             android:name=".service.MatchService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"></service>
     </application>
 
 </manifest>
