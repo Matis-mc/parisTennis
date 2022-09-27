@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.sherbrooke.paristennis.repository.MatchRepository;
+import com.sherbrooke.paristennis.viewModel.MainActivityViewModel;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,57 +41,7 @@ public class MainActivity extends AppCompatActivity {
                 MatchRepository.getInstance().getParties();
             }
         });
-    }
 
-
-
-    /**
-     * move this in a component available anywhere in the application
-     */
-    EventSourceListener eventSourceListener = new EventSourceListener() {
-        @Override
-        public void onClosed(@NotNull EventSource eventSource) {
-            super.onClosed(eventSource);
-        }
-
-        @Override
-        public void onEvent(@NotNull EventSource eventSource, @Nullable String id, @Nullable String type, @NotNull String data) {
-            Log.e("data-sse", data);
-            super.onEvent(eventSource, id, type, data);
-        }
-
-        @Override
-        public void onFailure(@NotNull EventSource eventSource, @Nullable Throwable t, @Nullable okhttp3.Response response) {
-            super.onFailure(eventSource, t, response);
-        }
-
-        @Override
-        public void onOpen(@NotNull EventSource eventSource, @NotNull okhttp3.Response response) {
-            super.onOpen(eventSource, response);
-        }
-    };
-
-    OkHttpClient client = new OkHttpClient.Builder()
-            .connectTimeout(5, TimeUnit.SECONDS)
-            .readTimeout(10, TimeUnit.MINUTES)
-            .writeTimeout(10, TimeUnit.MINUTES)
-            .build();
-
-    Request request = new Request.Builder()
-            .url("http://192.168.224.1:3000/events")
-            .header("Accept", "application/json; q=0.5")
-            .addHeader("Accept", "text/event-stream")
-            .build();
-
-    Call call = (Call) client.newCall(request);
-    Response response;
-
-    {
-        try {
-            response = call.execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -98,5 +49,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
+        MainActivityViewModel model = new ViewModelProvider(this).get(MainActivityViewModel.class);
+        model.getParties().observe(this, parties -> {
+            parties.forEach(partie -> {
+                Log.e("", partie.toString());
+            });
+        });
     }
 }

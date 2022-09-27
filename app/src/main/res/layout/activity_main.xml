@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:background="@drawable/rectangle_shape"
 
         android:text="Parier"
 
@@ -27,7 +26,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:background="@drawable/demi_rectangle_shape_left"
         android:layout_toLeftOf="@+id/button"
 
         android:text="Matchs"
@@ -40,7 +38,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:background="@drawable/demi_rectangle_shape_right"
         android:layout_toRightOf="@+id/button"
 
         android:text="En cours"

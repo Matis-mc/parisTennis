@@ -2,6 +2,8 @@ package com.sherbrooke.paristennis.repository;
 
 import android.util.Log;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.sherbrooke.paristennis.api.Client;
 import com.sherbrooke.paristennis.model.Partie;
 
@@ -14,6 +16,7 @@ import retrofit2.Response;
 public class MatchRepository {
 
     private static MatchRepository instance;
+    MutableLiveData<List<Partie>> parties;
 
     private MatchRepository(){
 
@@ -29,12 +32,13 @@ public class MatchRepository {
     /**
      * move this in a component available anywhere in the application
      */
-    public void getParties(){
+    public MutableLiveData<List<Partie>> getParties(){
         Call<List<Partie>> call = Client.getInstance().getApi().getActuelleParties();
         call.enqueue(new Callback<List<Partie>>() {
             @Override
             public void onResponse(Call<List<Partie>> call, Response<List<Partie>> response) {
                 Log.e("Callback", response.body().toString());
+                parties.setValue(response.body());
             }
 
             @Override
@@ -42,6 +46,7 @@ public class MatchRepository {
                 //Toast.makeText(context, "An error has occured", Toast.LENGTH_LONG).show();
             }
         });
+        return parties;
     }
 
 
